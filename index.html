@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find My College</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #43474e;
+            background: #ffffff;
+        }
+
+        /* ============================================================
+           HERO SECTION
+           ============================================================ */
+        .hero {
+            background: #ffffff;
+            padding: 120px 48px;
+            text-align: center;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #002045;
+            margin-bottom: 24px;
+            letter-spacing: -1.2px;
+            line-height: 60px;
+        }
+
+        .hero .subtitle {
+            font-size: 18px;
+            color: #43474e;
+            margin-bottom: 64px;
+            line-height: 28px;
+            max-width: 672px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Search Bar */
+        .search-container {
+            max-width: 672px;
+            margin: 0 auto 32px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #c4c6cf;
+            border-radius: 9999px;
+            padding: 24px 57px 24px 57px;
+            box-shadow: 0px 8px 30px 0px rgba(0, 32, 69, 0.08);
+        }
+
+        .search-container input {
+            flex: 1;
+            border: none;
+            font-size: 18px;
+            color: #002045;
+            outline: none;
+            font-family: inherit;
+            background: transparent;
+        }
+
+        .search-container input::placeholder {
+            color: #c4c6cf;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 24px;
+            width: 18px;
+            height: 18px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="6" stroke="%23c4c6cf" stroke-width="1.5"/><path d="M13 13l4 4" stroke="%23c4c6cf" stroke-width="1.5" stroke-linecap="round"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            background: #0061a5;
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 12px 32px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .search-btn:hover {
+            background: #004d82;
+        }
+
+        .search-btn svg {
+            width: 9px;
+            height: 9px;
+        }
+
+        /* Quick Filters / Chips */
+        .chips {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            background: #ebf8ff;
+            color: #3182ce;
+            border: 1px solid transparent;
+            border-radius: 9999px;
+            padding: 9px 17px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: #daeef8;
+        }
+
+        /* ============================================================
+           RECOMMENDATIONS SECTION
+           ============================================================ */
+        .recommendations {
+            background: #eff4ff;
+            border-top: 1px solid #c4c6cf;
+            padding: 97px 48px;
+        }
+
+        .recommendations-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .recommendations-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 32px;
+        }
+
+        .recommendations-title {
+            flex: 1;
+        }
+
+        .recommendations-title h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #002045;
+            margin-bottom: 8px;
+            letter-spacing: -0.32px;
+            line-height: 40px;
+        }
+
+        .recommendations-title p {
+            font-size: 16px;
+            color: #43474e;
+            line-height: 24px;
+        }
+
+        .view-all-btn {
+            color: #0061a5;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .view-all-btn:hover {
+            color: #004d82;
+        }
+
+        .view-all-btn svg {
+            width: 12px;
+            height: 9px;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        @media (max-width: 1024px) {
+            .card-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 12px 24px rgba(0, 32, 69, 0.1);
+        }
+
+        .card-image {
+            position: relative;
+            height: 192px;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            box-shadow: inset 0px -20px 40px 0px rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+        }
+
+        .bookmark-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(2px);
+            border: none;
+            border-radius: 9999px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+            transition: background 0.2s;
+        }
+
+        .bookmark-btn:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .bookmark-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .card-badge {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: #ebf8ff;
+            color: #3182ce;
+            padding: 2.5px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-content {
+            padding: 16px;
+        }
+
+        .card-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #002045;
+            margin-bottom: 8px;
+            line-height: 30px;
+        }
+
+        .card-location {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #43474e;
+            margin-bottom: 16px;
+            line-height: 16px;
+        }
+
+        .card-location svg {
+            width: 9px;
+            height: 11px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 17px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .card-acceptance {
+            flex: 1;
+        }
+
+        .card-acceptance-label {
+            font-size: 10px;
+            color: #43474e;
+            letter-spacing: 0.25px;
+            text-transform: uppercase;
+            line-height: 15px;
+            margin-bottom: 5px;
+        }
+
+        .card-acceptance-rate {
+            font-size: 14px;
+            font-weight: 600;
+            color: #002045;
+            letter-spacing: 0.14px;
+            line-height: 20px;
+        }
+
+        .card-details-btn {
+            color: #0061a5;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .card-details-btn:hover {
+            color: #004d82;
+        }
+
+        /* ============================================================
+           CONTACT FORM SECTION
+           ============================================================ */
+        .contact-section {
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            padding: 96px 48px;
+        }
+
+        .contact-container {
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .contact-section h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #002045;
+            margin-bottom: 8px;
+            letter-spacing: -0.32px;
+            line-height: 40px;
+        }
+
+        .contact-section .subtitle {
+            font-size: 16px;
+            color: #43474e;
+            margin-bottom: 32px;
+            line-height: 24px;
+            text-align: left;
+            max-width: none;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #002045;
+            margin-bottom: 8px;
+            line-height: 20px;
+        }
+
+        .form-group input {
+            padding: 12px 16px;
+            font-size: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #0061a5;
+            box-shadow: 0 0 0 3px rgba(0, 97, 165, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #9ca3af;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #0061a5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            line-height: 24px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: #004d82;
+        }
+
+        .submit-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* Success/Error Messages */
+        .message {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            background: #d1f2eb;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        /* ============================================================
+           RESPONSIVE DESIGN
+           ============================================================ */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 60px 24px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero .subtitle {
+                font-size: 16px;
+            }
+
+            .recommendations {
+                padding: 60px 24px;
+            }
+
+            .recommendations-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .view-all-btn {
+                align-self: flex-start;
+            }
+
+            .contact-section {
+                padding: 60px 24px;
+            }
+
+            .search-container {
+                padding: 16px 40px 16px 40px;
+                margin-bottom: 24px;
+            }
+
+            .chips {
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 40px 16px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+                line-height: 36px;
+            }
+
+            .hero .subtitle {
+                font-size: 14px;
+                line-height: 22px;
+            }
+
+            .search-container {
+                padding: 12px 32px 12px 32px;
+                margin-bottom: 16px;
+            }
+
+            .search-icon {
+                width: 16px;
+                height: 16px;
+            }
+
+            .search-btn {
+                padding: 10px 24px;
+                font-size: 12px;
+            }
+
+            .recommendations-title h2 {
+                font-size: 24px;
+            }
+
+            .card-grid {
+                gap: 16px;
+            }
+
+            .contact-section {
+                padding: 40px 16px;
+            }
+
+            .contact-section h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         HERO SECTION
+         ============================================================ -->
+    <section class="hero">
+        <h1>Find My College</h1>
+        <p class="subtitle">
+            Discover your future at the perfect institution. Search through thousands of colleges to find the best fit for your academic journey.
+        </p>
+
+        <div class="search-container">
+            <div class="search-icon"></div>
+            <input type="text" placeholder="Search by college name, major, or location...">
+            <button class="search-btn">
+                Search
+                <svg viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.5 0.5L0.5 8.5M8.5 8.5L0.5 0.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="chips">
+            <button class="chip">Engineering</button>
+            <button class="chip">Business</button>
+            <button class="chip">California</button>
+            <button class="chip">Ivy League</button>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         RECOMMENDATIONS SECTION
+         ============================================================ -->
+    <section class="recommendations">
+        <div class="recommendations-container">
+            <div class="recommendations-header">
+                <div class="recommendations-title">
+                    <h2>Recommended Colleges for You</h2>
+                    <p>Based on your academic profile and interests.</p>
+                </div>
+                <button class="view-all-btn">
+                    View all recommendations
+                    <svg viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.5 4.5L1 4.5M8.5 1L11.5 4.5L8.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="card-grid">
+                <!-- Card 1: Stanford -->
+                <div class="card">
+                    <div class="card-image">
+                        <img src="https://www.figma.com/api/mcp/asset/4a3f4071-87e0-40a3-aa99-b5bd484c19b3.png" alt="Stanford University">
+                        <button class="bookmark-btn">
+                            <svg viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 1H10C10.5304 1 11.0391 1.21071 11.4142 1.58579C11.7893 1.96086 12 2.46957 12 3V15L6 11.5L0 15V3C0 2.46957 0.210714 1.96086 0.585786 1.58579C0.960859 1.21071 1.46957 1 2 1Z" fill="#0061a5"/>
+                            </svg>
+                        </button>
+                        <span class="card-badge">TOP-TIER RESEARCH</span>
+                    </div>
+                    <div class="card-content">
+                        <h3>Stanford University</h3>
+                        <div class="card-location">
+                            <svg viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.5 10.5C1.85 8.45 0.5 6.35 0.5 4.5C0.5 2.01 2.24 0.5 4.5 0.5C6.76 0.5 8.5 2.01 8.5 4.5C8.5 6.35 7.15 8.45 4.5 10.5Z" stroke="#43474e" stroke-width="1"/>
+                                <circle cx="4.5" cy="4.5" r="1.5" fill="#43474e"/>
+                            </svg>
+                            Stanford, CA
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-acceptance">
+                                <div class="card-acceptance-label">Acceptance Rate</div>
+                                <div class="card-acceptance-rate">4%</div>
+                            </div>
+                            <button class="card-details-btn">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: MIT -->
+                <div class="card">
+                    <div class="card-image">
+                        <img src="https://www.figma.com/api/mcp/asset/237e6e1c-825a-46bc-ad49-ef99db9c1311.png" alt="MIT">
+                        <button class="bookmark-btn">
+                            <svg viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 1H10C10.5304 1 11.0391 1.21071 11.4142 1.58579C11.7893 1.96086 12 2.46957 12 3V15L6 11.5L0 15V3C0 2.46957 0.210714 1.96086 0.585786 1.58579C0.960859 1.21071 1.46957 1 2 1Z" fill="#0061a5"/>
+                            </svg>
+                        </button>
+                        <span class="card-badge">STEM FOCUSED</span>
+                    </div>
+                    <div class="card-content">
+                        <h3>MIT</h3>
+                        <div class="card-location">
+                            <svg viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.5 10.5C1.85 8.45 0.5 6.35 0.5 4.5C0.5 2.01 2.24 0.5 4.5 0.5C6.76 0.5 8.5 2.01 8.5 4.5C8.5 6.35 7.15 8.45 4.5 10.5Z" stroke="#43474e" stroke-width="1"/>
+                                <circle cx="4.5" cy="4.5" r="1.5" fill="#43474e"/>
+                            </svg>
+                            Cambridge, MA
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-acceptance">
+                                <div class="card-acceptance-label">Acceptance Rate</div>
+                                <div class="card-acceptance-rate">7%</div>
+                            </div>
+                            <button class="card-details-btn">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Oxford -->
+                <div class="card">
+                    <div class="card-image">
+                        <img src="https://www.figma.com/api/mcp/asset/489f2f22-4bef-4653-afb7-5d12b22487bb.png" alt="Oxford University">
+                        <button class="bookmark-btn">
+                            <svg viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 1H10C10.5304 1 11.0391 1.21071 11.4142 1.58579C11.7893 1.96086 12 2.46957 12 3V15L6 11.5L0 15V3C0 2.46957 0.210714 1.96086 0.585786 1.58579C0.960859 1.21071 1.46957 1 2 1Z" fill="#0061a5"/>
+                            </svg>
+                        </button>
+                        <span class="card-badge">GLOBAL PRESTIGE</span>
+                    </div>
+                    <div class="card-content">
+                        <h3>Oxford University</h3>
+                        <div class="card-location">
+                            <svg viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.5 10.5C1.85 8.45 0.5 6.35 0.5 4.5C0.5 2.01 2.24 0.5 4.5 0.5C6.76 0.5 8.5 2.01 8.5 4.5C8.5 6.35 7.15 8.45 4.5 10.5Z" stroke="#43474e" stroke-width="1"/>
+                                <circle cx="4.5" cy="4.5" r="1.5" fill="#43474e"/>
+                            </svg>
+                            Oxford, UK
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-acceptance">
+                                <div class="card-acceptance-label">Acceptance Rate</div>
+                                <div class="card-acceptance-rate">17%</div>
+                            </div>
+                            <button class="card-details-btn">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         CONTACT FORM SECTION (NEW)
+         ============================================================ -->
+    <section class="contact-section">
+        <div class="contact-container">
+            <h2>Interested? Get More Information</h2>
+            <p class="subtitle">Enter your details to receive updates and personalized college recommendations.</p>
+
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        placeholder="Your full name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="your.email@example.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        name="phone" 
+                        placeholder="+1 (555) 000-0000"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="submit-btn">Submit</button>
+                <div id="message" class="message"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         JAVASCRIPT - Form Handling
+         ============================================================ -->
+    <script>
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbweJG6trdHX5agzLZjp-a2pD_P_aVXnmFM_lABmEkpgnu7HF8obykm-EzeBn78-hcbb/exec";
+
+        const form = document.getElementById("contactForm");
+        const messageDiv = document.getElementById("message");
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+
+            // Clear previous message
+            messageDiv.textContent = "";
+            messageDiv.classList.remove("show", "success", "error");
+
+            // Validate
+            if (!name || !email || !phone) {
+                showError("Please fill in all fields.");
+                return;
+            }
+
+            // Disable submit button
+            const submitBtn = form.querySelector(".submit-btn");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Submitting...";
+
+            // Build URL with query parameters
+            const params = new URLSearchParams({ name, email, phone });
+            const url = APPS_SCRIPT_URL + "?" + params.toString();
+
+            // Fetch with GET + no-cors
+            // DO NOT use .then(res => res.json()) — response is opaque
+            // DO NOT check response.ok or response.status
+            fetch(url, { method: "GET", mode: "no-cors" })
+                .then(() => {
+                    // Success — opaque response, just assume it worked
+                    showSuccess("Thank you! We'll be in touch soon.");
+                    form.reset();
+                })
+                .catch(() => {
+                    // Error occurred
+                    showError("There was an issue submitting your form. Please try again.");
+                })
+                .finally(() => {
+                    // Re-enable submit button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Submit";
+                });
+        });
+
+        function showSuccess(msg) {
+            messageDiv.textContent = msg;
+            messageDiv.classList.add("show", "success");
+        }
+
+        function showError(msg) {
+            messageDiv.textContent = msg;
+            messageDiv.classList.add("show", "error");
+        }
+    </script>
+
+</body>
+</html>
